@@ -14,12 +14,11 @@ swift_library(
 
 swift_library(
     name = "lib_test",
-    srcs = [":src"],
-    module_name = "BudgetAppLib",
-    # If your library has dependencies, list them here. 
-    # For testing with `@testable import BudgetAppLib`, 
+    # If your library has dependencies, list them here.
+    # For testing with `@testable import BudgetAppLib`,
     # it’s often helpful to mark the library as testonly:
     testonly = True,
+    srcs = [":src"],
+    module_name = "BudgetAppLib",
     visibility = ["//visibility:public"],
 )
-
