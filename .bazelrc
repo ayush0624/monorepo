@@ -1,0 +1,5 @@
+# Enable Go race detection
+build --features=race
+
+# Use the Go SDK installed by Bazel
+build --incompatible_use_specific_tool_files=false
