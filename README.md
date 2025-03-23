@@ -20,7 +20,3 @@ Browse through the project directories to explore different projects. Each proje
 ## Contributing
 
 While this is primarily a personal repository, suggestions and feedback are welcome. Feel free to open an issue or submit a pull request.
-
-## License
-
-Unless otherwise specified in a project's directory, all projects in this repository are licensed under the MIT License. See individual project directories for any project-specific licensing information.
