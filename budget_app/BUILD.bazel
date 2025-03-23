@@ -1,0 +1,8 @@
+load("//bazel/swift:macros.bzl", "macos_swift_app")
+
+macos_swift_app(
+    name = "BudgetApp",
+    srcs = ["//budget_app/app:src"],
+    infoplist = ["//budget_app/resources:Info.plist"],
+    minimum_os_version = "13.0",
+)

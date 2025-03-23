@@ -1,0 +1,25 @@
+load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
+
+filegroup(
+    name = "src",
+    srcs = glob(["**/*.swift"]),
+    visibility = ["//visibility:public"],
+)
+
+swift_library(
+    name = "lib",
+    srcs = [":src"],
+    visibility = ["//visibility:public"],
+)
+
+swift_library(
+    name = "lib_test",
+    srcs = [":src"],
+    module_name = "BudgetAppLib",
+    # If your library has dependencies, list them here. 
+    # For testing with `@testable import BudgetAppLib`, 
+    # it’s often helpful to mark the library as testonly:
+    testonly = True,
+    visibility = ["//visibility:public"],
+)
+
