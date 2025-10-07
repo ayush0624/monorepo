@@ -2,9 +2,15 @@ load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
 py_library(
     name = "tutorial",
-    srcs = ["api.py"],
+    srcs = [
+        "api.py",
+        "errors.py",
+    ],
     visibility = ["//:__subpackages__"],
-    deps = ["@pypi//fastapi"],
+    deps = [
+        "@pypi//fastapi",
+        "@pypi//pydantic",
+    ],
 )
 
 py_binary(
