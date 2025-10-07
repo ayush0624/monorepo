@@ -43,7 +43,7 @@ Budget App is a desktop application that helps you track your expenses, categori
 To build the application using Bazel:
 
 ```bash
-bazel build //budget_app:BudgetApp
+bazel build //projects/budget_app:BudgetApp
 ```
 
 
@@ -52,7 +52,7 @@ bazel build //budget_app:BudgetApp
 To run the unit tests:
 
 ```bash
-bazel test //budget_app/tests:DataStoreTests
+bazel test //projects/budget_app/tests:DataStoreTests
 ```
 
 
