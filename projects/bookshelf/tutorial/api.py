@@ -1,8 +1,10 @@
-from fastapi import FastAPI, Path, Request, status
-from typing import Optional, Any, Dict
+from fastapi import Depends, FastAPI, Path, Request, status
+from typing import Optional, Dict
 from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
 from pydantic import BaseModel
 from projects.bookshelf.tutorial.errors import EntityDoesNotExistError, EntityAlreadyExistsError
+from projects.bookshelf.tutorial.db import get_db, Student
 
 app = FastAPI()
 
@@ -26,94 +28,90 @@ async def entity_already_exists_handler(_: Request, exc: EntityAlreadyExistsErro
         },
     )
 
-
-students: Dict[int, Any] = {
-    0: {
-        "name": "john",
-        "age": 17,
-        "year": "year 12"
-    },
-    1: {
-        "name": "bob",
-        "age": 12,
-        "year": "year 10"
-    }
-}
-
-class Student(BaseModel):
+class StudentCreate(BaseModel):
     name: str
     age: int
     year: str
 
-class UpdateStudent(BaseModel):
+class StudentResponse(BaseModel):
+    id: int
+    name: str
+    age: int
+    year: str
+
+class StudentUpdate(BaseModel):
     name: Optional[str] = None
     age: Optional[int] = None
     year: Optional[str] = None
+
 
 @app.get("/ping", status_code=status.HTTP_200_OK)
 async def ping() -> Dict[str, str]:
     return {"message": "pong"}
 
-@app.get("/get-student/{student_id}")
-def get_student(student_id: int = Path(
-    description="The id of the student to view",
-    ge = 0,
-)) -> JSONResponse:
-    if student_id not in students:
-        raise EntityDoesNotExistError(message = "Could Not Find Student ID")
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content = students[student_id]
-    )
+@app.get("/get-student/{id}", response_model=StudentResponse)
+def get_student(
+    id: int = Path(description="The id of the student to view"),
+    db: Session = Depends(get_db)
+) -> StudentResponse:
+    student = db.query(Student).filter(Student.id == id).first()
+    if not student:
+        raise EntityDoesNotExistError(message = "Could Not Find Student ID") 
+    return student
 
+@app.post("/new-student/", response_model=StudentResponse)
+def new_student(
+    student: StudentCreate, 
+    db:Session = Depends(get_db)
+) -> StudentResponse:
+    if db.query(Student).filter(Student.name == student.name).first():
+        raise EntityAlreadyExistsError("Found another Student with Same Name")
 
-@app.get("/get-by-name")
-def get_student_name(name: Optional[str] = None) -> JSONResponse:
-    for _, data in students.items():
-        if data["name"] == name:
-            return JSONResponse(
-                status_code=status.HTTP_200_OK,
-                content = data
-            )
-    raise EntityDoesNotExistError(message = "Could Not Find Student with Name")
+    new_student = Student(**student.model_dump())
+    db.add(new_student)
+    db.commit()
+    db.refresh(new_student)
+    return new_student
 
-@app.post("/new-student/{student_id}")
-def new_student(student_id: int, student: Student) -> JSONResponse:
-    if student_id in students:
-        raise EntityAlreadyExistsError("Found another Student with Same ID")
+@app.get("/get-by-name", response_model=StudentResponse)
+def get_student_name(
+    name: Optional[str] = None,
+    db: Session = Depends(get_db)
+) -> StudentResponse:
+    student = db.query(Student).filter(Student.name == name).first()
+    if not student:
+        raise EntityDoesNotExistError(message = "Could Not Find Student with Name")
+    return student
 
-    students[student_id] = student.model_dump()
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content = students[student_id]
-    )
-
-@app.put("/update-student/{student_id}")
-def update_student(student_id: int, student: UpdateStudent) -> JSONResponse:
-    if student_id not in students:
+@app.put("/update-student/{id}", response_model=StudentResponse)
+def update_student(
+    id: int, 
+    student: StudentUpdate,
+    db: Session = Depends(get_db)
+) -> StudentResponse:
+    
+    db_student = db.query(Student).filter(Student.id == id).first()
+    if not db_student:
         raise EntityDoesNotExistError(message = "Could Not Find Student ID")
     
-    student_data = students[student_id]
     new_student_data = student.model_dump()
     for field, value in new_student_data.items():
         if value is not None:
-            student_data[field] = value
+            setattr(db_student, field, value)
     
-    students[student_id] = student_data
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content = students[student_id]
-    )
+    db.commit()
+    db.refresh(db_student)
+    return db_student
     
-@app.delete("/delete-student/{student_id}")
-def delete_student(student_id: int) -> JSONResponse:
-    if student_id not in students:
+@app.delete("/delete-student/{id}", response_model=StudentResponse)
+def delete_student(
+    id: int,
+    db: Session = Depends(get_db)
+) -> StudentResponse:
+    db_student = db.query(Student).filter(Student.id == id).first()
+    if not db_student:
         raise EntityDoesNotExistError(message = "Could Not Find Student ID")
 
-    del students[student_id]
-    return JSONResponse(
-        status_code=status.HTTP_200_OK,
-        content = {
-            "message": "successfully deleted student"
-        }
-    )
+    db.delete(db_student)
+    db.commit()
+    return db_student
