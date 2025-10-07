@@ -4,12 +4,14 @@ py_library(
     name = "tutorial",
     srcs = [
         "api.py",
+        "db.py",
         "errors.py",
     ],
     visibility = ["//:__subpackages__"],
     deps = [
         "@pypi//fastapi",
         "@pypi//pydantic",
+        "@pypi//sqlalchemy",
     ],
 )
 

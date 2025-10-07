@@ -15,10 +15,11 @@ manifest:
     pydantic: pydantic
     pydantic_core: pydantic_core
     sniffio: sniffio
+    sqlalchemy: sqlalchemy
     starlette: starlette
     typing_extensions: typing_extensions
     typing_inspection: typing_inspection
     uvicorn: uvicorn
   pip_repository:
     name: pypi
-integrity: 3c0163202ae7a9d9356be8fdfdc748cc697ffb4be0bb0a0dced1b65768458772
+integrity: 4ea09acdc269e717e377fe67e318bf07450c70316a75d0840b31c312e7a8ea0b
