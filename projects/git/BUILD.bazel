@@ -1,17 +1,15 @@
-load("@io_bazel_rules_go//go:def.bzl", "go_binary", "go_library")
+load("@rules_go//go:def.bzl", "go_binary", "go_library")
 
 go_library(
     name = "git_lib",
     srcs = ["main.go"],
-    importpath = "github.com/yourusername/monorepo/projects/git",
+    importpath = "github.com/ayush0624/monorepo/projects/git",
     visibility = ["//visibility:private"],
-    deps = [
-        "@com_github_spf13_cobra//:cobra",
-    ],
+    deps = ["@com_github_spf13_cobra//:cobra"],
 )
 
 go_binary(
-    name = "binary",
+    name = "git",
     embed = [":git_lib"],
     visibility = ["//visibility:public"],
 )

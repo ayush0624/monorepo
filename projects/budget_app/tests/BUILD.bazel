@@ -5,6 +5,6 @@ swift_test(
     srcs = ["DataStoreTests.swift"],
     # Add the library you are testing to the deps:
     deps = [
-        "//budget_app/app:lib_test",
+        "//projects/budget_app/app:lib_test",
     ],
 )
