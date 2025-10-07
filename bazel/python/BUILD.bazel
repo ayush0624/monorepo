@@ -1,0 +1,7 @@
+load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+
+compile_pip_requirements(
+    name = "requirements",
+    requirements_in = "//bazel/python:packages.in",
+    requirements_txt = "//bazel/python:requirements.txt",
+)

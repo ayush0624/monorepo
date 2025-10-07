@@ -1,0 +1,7 @@
+# Python package dependencies
+# Add your Python packages here, one per line
+# Example:
+# requests==2.31.0
+# numpy==1.26.0
+# pandas==2.1.0
+fastapi==0.118.0
