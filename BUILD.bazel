@@ -1,4 +1,17 @@
-load("@gazelle//:def.bzl", "gazelle")
+load("@gazelle//:def.bzl", "gazelle", "gazelle_binary")
+
+gazelle_binary(
+    name = "gazelle_bin",
+    languages = [
+        # List of language plugins.
+        "@gazelle//language/proto",
+        "@gazelle//language/go",
+        "@rules_python_gazelle_plugin//python",
+    ],
+)
 
 # gazelle:prefix github.com/ayush0624/monorepo
-gazelle(name = "gazelle")
+gazelle(
+    name = "gazelle",
+    gazelle = ":gazelle_bin",
+)

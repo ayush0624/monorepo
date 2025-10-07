@@ -1,7 +1,51 @@
+load("@pypi//:requirements.bzl", "all_whl_requirements")
 load("@rules_python//python:pip.bzl", "compile_pip_requirements")
+load("@rules_python_gazelle_plugin//manifest:defs.bzl", "gazelle_python_manifest")
+load("@rules_python_gazelle_plugin//modules_mapping:def.bzl", "modules_mapping")
 
 compile_pip_requirements(
     name = "requirements",
     requirements_in = "//bazel/python:packages.in",
     requirements_txt = "//bazel/python:requirements.txt",
+)
+
+# This rule fetches the metadata for python packages we depend on. That data is
+# required for the gazelle_python_manifest rule to update our manifest file.
+modules_mapping(
+    name = "modules_map",
+
+    # include_stub_packages: bool (default: False)
+    # If set to True, this flag automatically includes any corresponding type stub packages
+    # for the third-party libraries that are present and used. For example, if you have
+    # `boto3` as a dependency, and this flag is enabled, the corresponding `boto3-stubs`
+    # package will be automatically included in the BUILD file.
+    # Enabling this feature helps ensure that type hints and stubs are readily available
+    # for tools like type checkers and IDEs, improving the development experience and
+    # reducing manual overhead in managing separate stub packages.
+    include_stub_packages = True,
+    wheels = all_whl_requirements,
+)
+
+# Gazelle python extension needs a manifest file mapping from
+# an import to the installed package that provides it.
+# This macro produces two targets:
+# - //:gazelle_python_manifest.update can be used with `bazel run`
+#   to recalculate the manifest
+# - //:gazelle_python_manifest.test is a test target ensuring that
+#   the manifest doesn't need to be updated
+gazelle_python_manifest(
+    name = "gazelle_python_manifest",
+    modules_mapping = ":modules_map",
+
+    # This is what we called our `pip.parse` rule in MODULE.bazel, where third-party
+    # python libraries are loaded in BUILD files.
+    pip_repository_name = "pypi",
+
+    # This should point to wherever we declare our python dependencies
+    # (the same as what we passed to the modules_mapping rule in WORKSPACE)
+    # This argument is optional. If provided, the `.test` target is very
+    # fast because it just has to check an integrity field. If not provided,
+    # the integrity field is not added to the manifest which can help avoid
+    # merge conflicts in large repos.
+    requirements = "//bazel/python:requirements.txt",
 )
