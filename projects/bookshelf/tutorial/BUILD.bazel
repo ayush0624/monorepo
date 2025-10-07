@@ -1,0 +1,19 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+
+py_library(
+    name = "tutorial",
+    srcs = ["api.py"],
+    visibility = ["//:__subpackages__"],
+    deps = ["@pypi//fastapi"],
+)
+
+py_binary(
+    name = "tutorial_bin",
+    srcs = ["__main__.py"],
+    main = "__main__.py",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        ":tutorial",
+        "@pypi//uvicorn",
+    ],
+)

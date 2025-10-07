@@ -1,4 +1,5 @@
 load("@gazelle//:def.bzl", "gazelle", "gazelle_binary")
+load("@rules_uv//uv:venv.bzl", "create_venv")
 
 gazelle_binary(
     name = "gazelle_bin",
@@ -11,7 +12,15 @@ gazelle_binary(
 )
 
 # gazelle:prefix github.com/ayush0624/monorepo
+# gazelle:python_extension enabled
+# gazelle:python_root
+# gazelle:python_manifest_file_name bazel/python/gazelle_python.yaml
 gazelle(
     name = "gazelle",
     gazelle = ":gazelle_bin",
+)
+
+create_venv(
+    name = "create_venv",
+    requirements_txt = "//bazel/python:requirements.txt",  # default
 )
