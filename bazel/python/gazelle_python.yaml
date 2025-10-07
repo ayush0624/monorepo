@@ -1,0 +1,21 @@
+# GENERATED FILE - DO NOT EDIT!
+#
+# To update this file, run:
+#   bazel run //bazel/python:gazelle_python_manifest.update
+
+---
+manifest:
+  modules_mapping:
+    annotated_types: annotated_types
+    anyio: anyio
+    fastapi: fastapi
+    idna: idna
+    pydantic: pydantic
+    pydantic_core: pydantic_core
+    sniffio: sniffio
+    starlette: starlette
+    typing_extensions: typing_extensions
+    typing_inspection: typing_inspection
+  pip_repository:
+    name: pypi
+integrity: ec93c5ecd1c5a0231e1f2eace6f9256a2db4ac64d298988bebfd2aa3ebe8bb22
