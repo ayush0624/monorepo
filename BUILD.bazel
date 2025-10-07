@@ -1,15 +1,4 @@
-load("@bazel_gazelle//:def.bzl", "gazelle")
+load("@gazelle//:def.bzl", "gazelle")
 
-# gazelle:prefix github.com/yourusername/monorepo
+# gazelle:prefix github.com/ayush0624/monorepo
 gazelle(name = "gazelle")
-
-# Run gazelle update-repos with go.mod file
-gazelle(
-    name = "gazelle-update-repos",
-    args = [
-        "-from_file=bazel/go/go.mod",
-        "-to_macro=bazel/go/deps.bzl%go_dependencies",
-        "-prune",
-    ],
-    command = "update-repos",
-)
