@@ -5,7 +5,7 @@ A FastAPI-based bookshelf management system with full CRUD operations.
 ## Project Structure
 
 - **tutorial/**: Learning materials and exercises covering FastAPI fundamentals before implementing the main bookshelf application
-- **main/**: Main application code (to be implemented)
+- **main/**: Main application code
 
 ## Features
 
