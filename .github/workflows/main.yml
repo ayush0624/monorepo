@@ -1,17 +1,23 @@
 name: Bazel CI
+
 on:
   pull_request:
     branches:
-      - main
-      - master
-      - "**"  # optional: runs on all PRs, regardless of target branch
+      - "**"
+
 jobs:
-  test:
+  bazel:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
-      - name: Setup Bazel
-        uses: ngalaiko/bazel-action@2.0.0
-        with:
-          args: bazel test //...
+
+      - name: Setup Bazelisk
+        uses: bazelbuild/setup-bazelisk@v2
+
+      - name: Build all targets
+        run: bazel build //...
+
+      - name: Run all tests
+        run: bazel test //...
