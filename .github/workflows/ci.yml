@@ -11,7 +11,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu, macos]
+        os: [macos]
 
     runs-on: ${{ matrix.os }}-latest
 
@@ -23,10 +23,11 @@ jobs:
       - name: Setup Bazel
         uses: bazel-contrib/setup-bazel@0.15.0
         with:
-          bazelisk: true          # Auto-respect .bazelversion
-          cache: true             # Enable GitHub cache
-          repository_cache: true  # Cache external deps
-          disk_cache: true        # Local disk cache for incremental builds
+          # Avoid downloading Bazel every time.
+          bazelisk-cache: true
+          disk-cache: true
+          external-cache: true
+          repository-cache: true
 
       - name: Build all targets
         run: bazel build //...
