@@ -8,12 +8,21 @@ manifest:
   modules_mapping:
     annotated_types: annotated_types
     anyio: anyio
+    certifi: certifi
     click: click
     fastapi: fastapi
     h11: h11
+    httpcore: httpcore
+    httpx: httpx
     idna: idna
+    iniconfig: iniconfig
+    packaging: packaging
+    pluggy: pluggy
+    py: pytest
     pydantic: pydantic
     pydantic_core: pydantic_core
+    pygments: pygments
+    pytest: pytest
     sniffio: sniffio
     sqlalchemy: sqlalchemy
     starlette: starlette
@@ -22,4 +31,4 @@ manifest:
     uvicorn: uvicorn
   pip_repository:
     name: pypi
-integrity: 4ea09acdc269e717e377fe67e318bf07450c70316a75d0840b31c312e7a8ea0b
+integrity: 8c456f3c89a0ff2496537d4730f752553b4915446f355f85f16d0d4e7ccb35c5

@@ -1,0 +1,15 @@
+load("@rules_python//python:defs.bzl", "py_test")
+
+# gazelle:python_generation_mode file
+
+py_test(
+    name = "test_api",
+    srcs = ["test_api.py"],
+    deps = [
+        "//projects/bookshelf/main",
+        "@pypi//fastapi",
+        "@pypi//httpx",  #keep
+        "@pypi//pytest",
+        "@pypi//sqlalchemy",
+    ],
+)

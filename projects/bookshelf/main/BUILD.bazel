@@ -1,0 +1,27 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+
+py_library(
+    name = "main",
+    srcs = [
+        "api.py",
+        "books.py",
+        "db.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "@pypi//fastapi",
+        "@pypi//pydantic",
+        "@pypi//sqlalchemy",
+    ],
+)
+
+py_binary(
+    name = "main_bin",
+    srcs = ["__main__.py"],
+    main = "__main__.py",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        ":main",
+        "@pypi//uvicorn",
+    ],
+)
