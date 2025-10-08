@@ -9,3 +9,4 @@ uvicorn~=0.37
 sqlalchemy~=2.0
 pytest~=8.4
 httpx~=0.28
+greenlet~=3.2

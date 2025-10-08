@@ -13,5 +13,5 @@ oci_image(
 oci_load(
     name = "load",
     image = ":image",
-    repo_tags = ["postgres:main"]
+    repo_tags = ["postgres:main"],
 )

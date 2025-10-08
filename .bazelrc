@@ -3,3 +3,5 @@ build --@rules_go//go/config:race
 
 # Use the Go SDK installed by Bazel
 build --incompatible_use_specific_tool_files=false
+
+test --test_output=errors

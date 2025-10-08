@@ -41,7 +41,9 @@ class Bookshelf(Base):
     author: Mapped[str]
 
 # Create all of the DB schemas
-Base.metadata.create_all(engine)
+def init_db():
+    """Create tables if they don't exist."""
+    Base.metadata.create_all(bind=engine)
 
 
 

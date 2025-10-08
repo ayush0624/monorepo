@@ -2,37 +2,36 @@ name: Bazel CI
 
 on:
   pull_request:
-    branches:
-      - "**"
+    branches: ["**"]
+  push:
+    branches: ["main"]
 
 jobs:
-  bazel:
-    runs-on: ubuntu-latest
+  test-and-build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [macos]
+
+    runs-on: ${{ matrix.os }}-latest
 
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Setup Bazelisk
-        uses: bazelbuild/setup-bazelisk@v2
-        continue-on-error: true
-
-      - name: Ensure Bazel cache directories exist
-        run: mkdir -p ~/.cache/bazel ~/.bazel-cache
-
-      - name: Cache Bazel outputs
-        uses: actions/cache@v4
-        continue-on-error: true
+      # 🧱 Setup Bazel using the latest official contrib action
+      - name: Setup Bazel
+        uses: bazel-contrib/setup-bazel@0.15.0
         with:
-          path: |
-            ~/.cache/bazel
-            ~/.bazel-cache
-          key: bazel-${{ runner.os }}-${{ hashFiles('**/*.bzl', '**/BUILD', '**/WORKSPACE', '**/MODULE.bazel') }}
-          restore-keys: |
-            bazel-${{ runner.os }}-
+          # Avoid downloading Bazel every time.
+          bazelisk-cache: true
+          disk-cache: true
+          external-cache: true
+          repository-cache: true
 
       - name: Build all targets
         run: bazel build //...
 
       - name: Run all tests
         run: bazel test //...
+
