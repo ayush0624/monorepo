@@ -6,6 +6,7 @@ py_library(
         "api.py",
         "books.py",
         "db.py",
+        "errors.py",
     ],
     visibility = ["//:__subpackages__"],
     deps = [

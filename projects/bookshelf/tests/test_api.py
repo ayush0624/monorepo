@@ -103,7 +103,8 @@ class TestGetBookById:
         """Test getting a book by ID when it doesn't exist."""
         # Try to get a book with non-existent ID
         response = client.get("/books/999")
-        assert response.status_code == 500  # Currently raises unhandled exception
+        assert response.status_code == 404
+        assert response.json()["error"] == "EntityDoesNotExistError"
 
 
 class TestCreateBook:
@@ -204,7 +205,8 @@ class TestUpdateBook:
         """Test updating a book that doesn't exist."""
         update_data = {"name": "Updated Name"}
         response = client.put("/books/999", json=update_data)
-        assert response.status_code == 500  # Currently raises unhandled exception
+        assert response.status_code == 404
+        assert response.json()["error"] == "EntityDoesNotExistError"
 
     def test_update_book_no_changes(self, client):
         """Test updating a book with empty update data."""
@@ -242,12 +244,14 @@ class TestDeleteBook:
 
         # Verify the book is actually deleted
         get_response = client.get(f"/books/{book_id}")
-        assert get_response.status_code == 500  # Book not found
+        assert response.status_code == 404
+        assert response.json()["error"] == "EntityDoesNotExistError"
 
     def test_delete_book_not_found(self, client):
         """Test deleting a book that doesn't exist."""
         response = client.delete("/books/999")
-        assert response.status_code == 500  # Currently raises unhandled exception
+        assert response.status_code == 404
+        assert response.json()["error"] == "EntityDoesNotExistError"
 
     def test_delete_book_verify_list(self, client):
         """Test that deleted book is removed from the list."""
