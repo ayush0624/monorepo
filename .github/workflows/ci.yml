@@ -15,6 +15,7 @@ jobs:
 
       - name: Setup Bazelisk
         uses: bazelbuild/setup-bazelisk@v2
+        continue-on-error: true
 
       - name: Ensure Bazel cache directories exist
         run: mkdir -p ~/.cache/bazel ~/.bazel-cache
