@@ -1,0 +1,38 @@
+name: Bazel CI
+
+on:
+  pull_request:
+    branches:
+      - "**"
+
+jobs:
+  bazel:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Bazelisk
+        uses: bazelbuild/setup-bazelisk@v2
+        continue-on-error: true
+
+      - name: Ensure Bazel cache directories exist
+        run: mkdir -p ~/.cache/bazel ~/.bazel-cache
+
+      - name: Cache Bazel outputs
+        uses: actions/cache@v4
+        continue-on-error: true
+        with:
+          path: |
+            ~/.cache/bazel
+            ~/.bazel-cache
+          key: bazel-${{ runner.os }}-${{ hashFiles('**/*.bzl', '**/BUILD', '**/WORKSPACE', '**/MODULE.bazel') }}
+          restore-keys: |
+            bazel-${{ runner.os }}-
+
+      - name: Build all targets
+        run: bazel build //...
+
+      - name: Run all tests
+        run: bazel test //...
