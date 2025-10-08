@@ -3,6 +3,7 @@ from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from typing import Optional, Sequence
 from projects.bookshelf.main.db import get_db, Bookshelf
+from projects.bookshelf.main.errors import EntityDoesNotExistError
 
 # Define Pydantic Data Models for Books
 class Create(BaseModel):
@@ -40,8 +41,7 @@ def get_book_by_id(
 ) -> Response:
     book = db.query(Bookshelf).filter(Bookshelf.id == id).first()
     if not book:
-        # TODO: handle errors better here
-        raise
+        raise EntityDoesNotExistError(message = f"book with UUID {id} was not found in DB")
     return book
 
 # POST endpoint for creating a new book
@@ -66,8 +66,7 @@ def update_existing_book(
 ) -> Response:
     existing_book = db.query(Bookshelf).filter(Bookshelf.id == id).first()
     if not existing_book:
-        # TODO : handle errors better here
-        raise
+        raise EntityDoesNotExistError(message = f"book with UUID {id} was not found in DB")
 
     if input_book.name:
         existing_book.name = input_book.name
@@ -87,8 +86,7 @@ def delete_existing_book(
 ) -> Response:
     existing_book = db.query(Bookshelf).filter(Bookshelf.id == id).first()
     if not existing_book:
-        # TODO : handle errors better here
-        raise
+        raise EntityDoesNotExistError(message = f"book with UUID {id} was not found in DB")
 
     db.delete(existing_book)
     db.commit()
