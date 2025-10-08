@@ -1,8 +1,17 @@
 name: Bazel CI
-  # You may pin to the exact commit or the version.
-  # uses: ngalaiko/bazel-action@ad5c8499ac2945bb7cc56587ed9da4a96b4fbb84
-  uses: ngalaiko/bazel-action@2.0.0
-  with:
-    # Arguments to the bazel command
-    args: test //...
-          
+on:
+  pull_request:
+    branches:
+      - main
+      - master
+      - "**"  # optional: runs on all PRs, regardless of target branch
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      - name: Setup Bazel
+        uses: ngalaiko/bazel-action@2.0.0
+        with:
+          args: test //...
