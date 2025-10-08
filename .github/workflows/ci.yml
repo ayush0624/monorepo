@@ -21,7 +21,7 @@ jobs:
 
       # 🧱 Setup Bazel using the latest official contrib action
       - name: Setup Bazel
-        uses: bazel-contrib/setup-bazel@v0.15.0
+        uses: bazel-contrib/setup-bazel@0.15.0
         with:
           bazelisk: true          # Auto-respect .bazelversion
           cache: true             # Enable GitHub cache
