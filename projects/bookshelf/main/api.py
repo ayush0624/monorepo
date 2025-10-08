@@ -3,9 +3,14 @@ from fastapi.responses import JSONResponse
 from typing import Dict
 from projects.bookshelf.main.books import router as books_router
 from projects.bookshelf.main.errors import EntityDoesNotExistError
+from projects.bookshelf.main.db import init_db
 
 app = FastAPI()
 app.include_router(books_router)
+
+@app.on_event("startup")
+def on_startup():
+    init_db()
 
 @app.exception_handler(EntityDoesNotExistError)
 async def entity_not_found_handler(_: Request, exc: EntityDoesNotExistError) -> JSONResponse:
