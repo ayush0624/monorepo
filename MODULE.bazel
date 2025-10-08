@@ -12,6 +12,7 @@ bazel_dep(name = "rules_go", version = "0.55.1")
 bazel_dep(name = "gazelle", version = "0.36.0")
 bazel_dep(name = "rules_python_gazelle_plugin", version = "1.6.3")
 bazel_dep(name = "rules_uv", version = "0.88.0")
+bazel_dep(name = "rules_oci", version = "2.2.6")
 
 go_sdk = use_extension("@rules_go//go:extensions.bzl", "go_sdk")
 
@@ -37,3 +38,12 @@ use_repo(pip, "pypi")
 
 apple_cc_configure = use_extension("@build_bazel_apple_support//crosstool:setup.bzl", "apple_cc_configure_extension")
 use_repo(apple_cc_configure, "local_config_apple_cc")
+
+oci = use_extension("@rules_oci//oci:extensions.bzl", "oci")
+oci.pull(
+    name = "postgres",
+    digest = "sha256:bc12e3cf19d08c8f2244ddb9a0c95dd9a51bd28b3742f11e4948f38a7be36d15",
+    image = "index.docker.io/arm64v8/postgres",
+    platforms = ["linux/arm64/v8"],
+)
+use_repo(oci, "postgres", "postgres_linux_arm64_v8")
