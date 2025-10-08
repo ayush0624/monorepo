@@ -11,6 +11,7 @@ manifest:
     certifi: certifi
     click: click
     fastapi: fastapi
+    greenlet: greenlet
     h11: h11
     httpcore: httpcore
     httpx: httpx
@@ -31,4 +32,4 @@ manifest:
     uvicorn: uvicorn
   pip_repository:
     name: pypi
-integrity: 8c456f3c89a0ff2496537d4730f752553b4915446f355f85f16d0d4e7ccb35c5
+integrity: de00a9a37ffd5350b5f774cc800e2584c9199a7f91f21e26b8f5db80d94eaa6a
