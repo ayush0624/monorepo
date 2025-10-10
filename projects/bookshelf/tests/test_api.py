@@ -8,6 +8,7 @@ from projects.bookshelf.main.db import Base, get_db
 # Shared in-memory SQLite database URI
 TEST_DATABASE_URL = "sqlite:///file:test.db?mode=memory&cache=shared"
 
+
 @pytest.fixture(scope="function")
 def client():
     """Creates a new isolated database and client per test."""
@@ -44,9 +45,11 @@ def client():
     connection.close()
     app.dependency_overrides.clear()
 
+
 # ---------------------------------------------------------------------
 # 🧪 TEST CASES
 # ---------------------------------------------------------------------
+
 
 class TestPingEndpoint:
     """Tests for the /ping endpoint."""
@@ -265,7 +268,7 @@ class TestDeleteBook:
         book2 = {"name": "Book 2", "author": "Author 2"}
 
         response1 = client.post("/books/", json=book1)
-        response2 = client.post("/books/", json=book2)
+        _ = client.post("/books/", json=book2)
         book1_id = response1.json()["id"]
 
         # Delete the first book

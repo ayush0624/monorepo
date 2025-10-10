@@ -1,6 +1,8 @@
 load("@gazelle//:def.bzl", "gazelle", "gazelle_binary")
 load("@rules_uv//uv:venv.bzl", "create_venv")
 
+exports_files([".ruff.toml"])
+
 gazelle_binary(
     name = "gazelle_bin",
     languages = [

@@ -1,0 +1,20 @@
+load("@bazel_skylib//rules:copy_file.bzl", "copy_file")
+load("@rules_multirun//:defs.bzl", "command")
+
+package(default_visibility = ["//visibility:public"])
+
+copy_file(
+    name = "ruff_bin",
+    src = "@aspect_rules_lint//format:ruff",
+    out = "ruff-bin",
+    is_executable = True
+)
+
+command(
+    name = "ruff",
+    command = ":ruff_bin",
+    run_from_workspace_root = True,
+    arguments = [
+        "format"
+    ]
+)

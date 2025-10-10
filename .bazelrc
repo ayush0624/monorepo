@@ -1,7 +1,19 @@
+# -------------------
+# Build Flags
+# -------------------
+
 # Enable Go race detection
 build --@rules_go//go/config:race
 
 # Use the Go SDK installed by Bazel
 build --incompatible_use_specific_tool_files=false
+
+# Enable Python Linters
+build --aspects=//bazel:lint.bzl%ruff
+build --@aspect_rules_lint//lint:fail_on_violation
+
+# -------------------
+# Test Flags
+# -------------------
 
 test --test_output=errors
