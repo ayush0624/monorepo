@@ -7,14 +7,14 @@ copy_file(
     name = "ruff_bin",
     src = "@aspect_rules_lint//format:ruff",
     out = "ruff-bin",
-    is_executable = True
+    is_executable = True,
 )
 
 command(
     name = "ruff",
+    arguments = [
+        "format",
+    ],
     command = ":ruff_bin",
     run_from_workspace_root = True,
-    arguments = [
-        "format"
-    ]
 )

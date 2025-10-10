@@ -1,4 +1,5 @@
 load("@gazelle//:def.bzl", "gazelle", "gazelle_binary")
+load("@rules_multirun//:defs.bzl", "multirun")
 load("@rules_uv//uv:venv.bzl", "create_venv")
 
 exports_files([".ruff.toml"])
@@ -26,4 +27,13 @@ gazelle(
 create_venv(
     name = "create_venv",
     requirements_txt = "//bazel/python:requirements.txt",  # default
+)
+
+multirun(
+    name = "autofix",
+    commands = [
+        ":gazelle",
+        "//bazel/tools:ruff",
+    ],
+    jobs = 0,  # Set to 0 to run in parallel, defaults to sequential
 )
