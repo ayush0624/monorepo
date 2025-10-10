@@ -34,6 +34,7 @@ def client():
             pass  # teardown handled below
 
     app.dependency_overrides[get_db] = override_get_db
+    app.router.on_startup.clear()
 
     # Create TestClient
     with TestClient(app) as test_client:
