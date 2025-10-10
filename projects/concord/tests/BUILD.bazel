@@ -1,13 +1,12 @@
 load("//bazel/python:defs.bzl", "pytest_test")
 
 pytest_test(
-    name = "test_api",
-    srcs = ["test_api.py"],
+    name = "test_crud",
+    srcs = ["test_crud.py"],
     deps = [
-        "//projects/bookshelf/main",
+        "//projects/concord/app",
         "@pypi//fastapi",
         "@pypi//httpx",  #keep
         "@pypi//pytest",
-        "@pypi//sqlalchemy",
     ],
 )
