@@ -1,0 +1,25 @@
+load("@rules_python//python:defs.bzl", "py_binary", "py_library")
+
+py_library(
+    name = "app",
+    srcs = [
+        "api.py",
+        "models.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "@pypi//fastapi",
+        "@pypi//pydantic",
+    ],
+)
+
+py_binary(
+    name = "app_bin",
+    srcs = ["__main__.py"],
+    main = "__main__.py",
+    visibility = ["//:__subpackages__"],
+    deps = [
+        ":app",
+        "@pypi//uvicorn",
+    ],
+)

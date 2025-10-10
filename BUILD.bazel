@@ -15,6 +15,7 @@ gazelle_binary(
 # gazelle:python_extension enabled
 # gazelle:python_root
 # gazelle:python_manifest_file_name bazel/python/gazelle_python.yaml
+# gazelle:map_kind py_test pytest_test //bazel/python:defs.bzl
 gazelle(
     name = "gazelle",
     gazelle = ":gazelle_bin",

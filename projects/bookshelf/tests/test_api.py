@@ -5,43 +5,48 @@ from sqlalchemy.orm import sessionmaker
 from projects.bookshelf.main.api import app
 from projects.bookshelf.main.db import Base, get_db
 
-# Create a test database in memory
-TEST_DATABASE_URL = "sqlite:///:memory:"
-test_engine = create_engine(
-    TEST_DATABASE_URL, connect_args={"check_same_thread": False}
-)
-TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=test_engine)
+# Shared in-memory SQLite database URI
+TEST_DATABASE_URL = "sqlite:///file:test.db?mode=memory&cache=shared"
 
+@pytest.fixture(scope="function")
+def client():
+    """Creates a new isolated database and client per test."""
+    # Create a new engine + connection for this test
+    engine = create_engine(
+        TEST_DATABASE_URL,
+        connect_args={"check_same_thread": False, "uri": True},
+    )
+    connection = engine.connect()
 
-def override_get_db():
-    """Override the get_db dependency to use the test database."""
+    # Create schema
+    Base.metadata.create_all(bind=connection)
+
+    # Bind a sessionmaker to this connection
+    TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=connection)
     db = TestSessionLocal()
-    try:
-        yield db
-        db.commit()
-    except:
-        db.rollback()
-        raise
-    finally:
-        db.close()
 
+    # Override get_db to reuse this session
+    def override_get_db():
+        try:
+            yield db
+        finally:
+            pass  # teardown handled below
 
-@pytest.fixture(scope="function")
-def test_db():
-    """Create and drop test database tables for each test."""
-    Base.metadata.create_all(bind=test_engine)
-    yield
-    Base.metadata.drop_all(bind=test_engine)
-
-
-@pytest.fixture(scope="function")
-def client(test_db):
-    """Create a test client with overridden database dependency."""
     app.dependency_overrides[get_db] = override_get_db
-    with TestClient(app) as c:
-        yield c
+
+    # Create TestClient
+    with TestClient(app) as test_client:
+        yield test_client
+
+    # Teardown: drop schema + close session + connection
+    db.close()
+    Base.metadata.drop_all(bind=connection)
+    connection.close()
     app.dependency_overrides.clear()
 
+# ---------------------------------------------------------------------
+# 🧪 TEST CASES
+# ---------------------------------------------------------------------
 
 class TestPingEndpoint:
     """Tests for the /ping endpoint."""
@@ -244,8 +249,8 @@ class TestDeleteBook:
 
         # Verify the book is actually deleted
         get_response = client.get(f"/books/{book_id}")
-        assert response.status_code == 404
-        assert response.json()["error"] == "EntityDoesNotExistError"
+        assert get_response.status_code == 404
+        assert get_response.json()["error"] == "EntityDoesNotExistError"
 
     def test_delete_book_not_found(self, client):
         """Test deleting a book that doesn't exist."""

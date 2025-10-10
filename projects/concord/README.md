@@ -1,31 +1,33 @@
-# 🧩 Concord — Collaborative Task Board (Backend Focus)
+# ✅ Concord — Personal Linear-Style Task Management Backend
 
-**Goal:** Build a real-time collaborative task board backend (like Trello + Notion-lite) using **FastAPI**, **Postgres**, **SQLModel**, and **Alembic**.  
-This project doubles as a **4-day intensive study plan** leading up to a backend interview on **Monday, Oct 13**.  
-By the end, you'll be confident in **Python backend development**, **Postgres schema design**, **normalization**, **concurrency**, and **locking**.
+**Goal:** Build a high-performance backend for managing your everyday tasks and projects — inspired by **Linear**, but built from scratch using **FastAPI**, **Postgres**, **SQLModel**, and **Alembic**.  
 
 ---
 
 ## 🚀 Project Overview
 
-**Concord** is a backend system where multiple users can collaborate on boards, lists, and tasks — safely handling **concurrent edits** and **transactions** at both the application and database level.
+**Concord** is a minimal but powerful task management system — a backend that models how you actually work day-to-day.  
+You’ll be able to create projects, tasks, tags, and track progress with concurrency-safe updates and transactional consistency.
+
+Imagine Linear or Todoist — but entirely self-hosted and optimized for developer workflows.
+
+---
 
 ### 🔧 Tech Stack
 - **FastAPI** — async backend framework  
 - **SQLModel** — ORM layer (built on SQLAlchemy)  
 - **PostgreSQL** — relational database  
 - **Alembic** — schema migrations  
-- *(Optional later)* Redis for pub/sub or async locking  
+- *(Optional later)* Redis for async background jobs and distributed locks  
 
-### 🧠 Key Concepts Covered
-- Async I/O with FastAPI (`async def`, background tasks)
-- SQLModel sessions and dependency injection
-- Alembic migrations and schema evolution
-- Postgres MVCC (Multi-Version Concurrency Control)
-- Isolation levels & row-level locking (`SELECT FOR UPDATE`)
-- Optimistic vs pessimistic concurrency control
-- Schema normalization (1NF–3NF)
-- Indexing, foreign keys, and query optimization
+---
+
+### 🧠 Core Concepts
+- Async I/O and background tasks with FastAPI  
+- SQLModel + Alembic for schema design and migrations  
+- MVCC (Multi-Version Concurrency Control) and transaction isolation  
+- Optimistic vs pessimistic concurrency control  
+- Schema normalization and indexing for performance  
 
 ---
 
@@ -35,29 +37,29 @@ By the end, you'll be confident in **Python backend development**, **Postgres sc
 **Theme:** Get comfortable with FastAPI & database plumbing.
 
 #### 🎯 Objectives
-- Set up the `Concord` project scaffold
-- Understand FastAPI request handling and dependency injection
-- Learn SQLModel and Alembic basics
+- Scaffold the `Concord` project
+- Understand FastAPI’s dependency injection and async lifecycle
+- Set up database and migrations
 
 #### 🧩 Tasks
-1. Watch → [FastAPI Crash Course (freeCodeCamp)](https://www.youtube.com/watch?v=0sOvCWFmrtA)  
+1. Watch → [FastAPI Crash Course (freeCodeCamp)](https://www.youtube.com/watch?v=0sOvCWFmrtA)
 2. Implement:
    - `main.py`
    - `models.py`
    - `database.py`
-   - Basic `/boards` CRUD routes  
-3. Initialize Alembic and run your first migration (`alembic revision --autogenerate -m "init"`)
+   - Basic `/projects` CRUD routes
+3. Initialize Alembic and run your first migration
 
 #### 🧠 Concepts
 - Async endpoints vs sync
-- Session lifecycles (`autocommit`, `autoflush`)
-- How FastAPI injects dependencies
+- Dependency injection for DB sessions
+- SQLModel base setup and Alembic integration
 
 #### ✅ Product Checkpoint
-- You can **start the FastAPI server (`uvicorn app.main:app --reload`)**  
-- `/boards` CRUD routes are working end-to-end (create, list, delete)  
-- Postgres connection + Alembic migrations verified  
-- Project structure initialized and committed  
+- FastAPI server starts successfully (`uvicorn app.main:app --reload`)  
+- `/projects` CRUD endpoints work  
+- Database tables created via Alembic  
+- Commit: `feat(day1): setup base project + project CRUD`
 
 ---
 
@@ -65,57 +67,57 @@ By the end, you'll be confident in **Python backend development**, **Postgres sc
 **Theme:** Think in relations.
 
 #### 🎯 Objectives
-- Design normalized schemas for `Board`, `TaskList`, and `Task`
-- Learn foreign keys, indexes, and migration strategy
+- Design normalized schemas for Projects, Tasks, and Tags
+- Implement relationships and indexing
 
 #### 🧩 Tasks
-1. Watch → [Database Design Full Course (freeCodeCamp)](https://www.youtube.com/watch?v=ztHopE5Wnpc)  
-2. Implement schema models + relationships in SQLModel  
-3. Run and inspect migrations  
-4. Use `EXPLAIN` to understand query plans  
+1. Watch → [Database Design Full Course (freeCodeCamp)](https://www.youtube.com/watch?v=ztHopE5Wnpc)
+2. Define models:
+   - `Project`: name, description
+   - `Task`: title, status, due_date, project_id
+   - `Tag`: name (many-to-many with Task)
+3. Write Alembic migrations and validate schema
+4. Run a few example queries with `EXPLAIN`
 
 #### 🧠 Concepts
 - 1NF → 3NF normalization  
-- Indexing (`CREATE INDEX`, composite, unique)
-- Foreign keys & referential integrity
-- When to denormalize for performance
+- Composite keys and foreign keys  
+- Query planning and index usage  
 
 #### ✅ Product Checkpoint
-- Schema defined for **Board → List → Task** relationships  
-- Alembic migration successfully generated and applied  
-- Verified foreign keys and indexes exist in Postgres (`\d+ table_name`)  
-- `GET /boards/{id}/lists` and `GET /lists/{id}/tasks` routes return relational data  
-- Documented ERD (text-based or diagram) checked in  
+- Fully normalized schema for projects, tasks, and tags  
+- `/tasks` routes working with filtering by project or tag  
+- `alembic revision --autogenerate` produces valid SQL  
+- Commit: `feat(day2): add task + tag models with migrations`
 
 ---
 
 ### **Day 3 — Concurrency & Transactions**
-**Theme:** Master Postgres MVCC and async concurrency.
+**Theme:** Ensure correctness under concurrent updates.
 
 #### 🎯 Objectives
-- Explore isolation levels and row locks
-- Implement optimistic & pessimistic concurrency control
-- Simulate concurrent writes from Python
+- Add endpoints for task assignment and status changes
+- Implement optimistic and pessimistic concurrency control
+- Simulate concurrent updates using `asyncio.gather`
 
 #### 🧩 Tasks
-1. Watch → “PostgreSQL Transactions & Isolation Levels Explained” (NeuralNine / DataEngCourses)  
+1. Watch → “PostgreSQL Transactions & Isolation Levels Explained”  
 2. Add endpoints:
-   - `/tasks/{id}/assign` — uses `SELECT FOR UPDATE`
-   - `/tasks/{id}/update` — checks `version` field  
-3. Write a concurrency demo using `asyncio.gather()` to simulate race conditions  
-4. Log and analyze behavior under different isolation levels  
+   - `/tasks/{id}/assign` → lock row with `SELECT FOR UPDATE`
+   - `/tasks/{id}/update` → optimistic concurrency check on version
+3. Create `concurrency_demo.py` to simulate race conditions
+4. Log outcomes and analyze conflicts
 
 #### 🧠 Concepts
-- MVCC visibility and snapshots  
-- `SELECT FOR UPDATE`, `NOWAIT`, and advisory locks  
-- `SERIALIZABLE` vs `READ COMMITTED`  
-- Connection pooling & async session handling
+- MVCC, snapshots, visibility
+- Locking strategies: `FOR UPDATE`, `NOWAIT`, advisory locks
+- Versioned updates for conflict prevention  
 
 #### ✅ Product Checkpoint
-- `/tasks/{id}/assign` endpoint correctly serializes concurrent requests  
-- Versioned task updates prevent stale writes (returns `409 Conflict` on mismatch)  
-- `concurrency_demo.py` script shows expected lock behavior when run concurrently  
-- Documented results: timing logs, conflict outcomes, isolation-level notes  
+- Concurrency demo shows correct locking behavior  
+- Task updates prevent stale writes (`409 Conflict`)  
+- Logs show transaction timing and outcomes  
+- Commit: `feat(day3): implement concurrency control + demo`
 
 ---
 
@@ -123,37 +125,35 @@ By the end, you'll be confident in **Python backend development**, **Postgres sc
 **Theme:** Tie it all together and prepare to explain it.
 
 #### 🎯 Objectives
-- Add background tasks and error handling
-- Review and rehearse architecture & schema discussions
+- Add background logging and better error handling
+- Review your system architecture and practice explaining it
 
 #### 🧩 Tasks
-1. Implement activity logging using FastAPI `BackgroundTasks`  
-2. Run concurrent simulations and capture logs  
-3. Practice interview answers:
-   - “Explain your backend architecture”
-   - “How do you handle concurrency?”
-   - “How do you design scalable schemas?”  
+1. Add background activity logging (FastAPI `BackgroundTasks`)
+2. Add proper error handling and response models
+3. Create `ARCHITECTURE.md` summarizing design choices
+4. Practice interview explanations:
+   - “How does your backend handle concurrency?”
+   - “How does MVCC work in Postgres?”
+   - “How do you design scalable schemas?”
 
 #### 🧠 Concepts
-- ACID in Postgres  
-- Async concurrency vs DB concurrency  
-- Migration/versioning workflow (Alembic)  
-- Trade-offs between isolation and throughput
+- ACID transactions
+- Async background tasks vs database transactions
+- Alembic migrations in CI/CD pipelines  
 
 #### ✅ Product Checkpoint
-- Background task logging integrated into task updates  
-- Error handling with proper HTTP codes (`400`, `409`, `500`)  
-- Logs and concurrency traces stored in `/logs/` directory  
-- Short architecture summary written in `ARCHITECTURE.md`  
-- End-to-end demo (from creating a board to concurrent updates) runs cleanly  
+- Background logging integrated  
+- `/tasks` endpoint responses validated  
+- Architecture document written  
+- Full workflow demo: create → assign → update → complete  
+- Commit: `feat(day4): finalize concurrency-safe backend + docs`
 
 ---
 
 ## ✅ Final Deliverables (by Oct 12)
-- ✅ Fully running FastAPI server (`uvicorn main:app --reload`)
-- ✅ Connected Postgres DB with Alembic migrations
-- ✅ CRUD + concurrency-safe endpoints
-- ✅ Documented notes on:
-  - Schema design & normalization
-  - Locking mechanisms used
-  - Isolation-level behavior observed
+- Fully working FastAPI + Postgres backend
+- CRUD and concurrency-safe endpoints
+- Structured schema with migrations
+- Architecture and concurrency notes
+- Local concurrency demo script
