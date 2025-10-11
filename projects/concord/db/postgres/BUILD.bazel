@@ -1,0 +1,17 @@
+load("@rules_oci//oci:defs.bzl", "oci_image", "oci_load")
+
+oci_image(
+    name = "image",
+    base = "@postgres",
+    env = {
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "postgres",
+        "POSTGRES_DB": "concord",
+    },
+)
+
+oci_load(
+    name = "load",
+    image = ":image",
+    repo_tags = ["postgres:main"],
+)
