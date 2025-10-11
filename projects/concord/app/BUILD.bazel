@@ -6,10 +6,12 @@ py_library(
         "api.py",
         "db.py",
         "models.py",
+        "schema.py",
     ],
     visibility = ["//:__subpackages__"],
     deps = [
         "@pypi//fastapi",
+        "@pypi//psycopg2_binary",  #keep
         "@pypi//pydantic",
         "@pypi//sqlalchemy",
     ],
