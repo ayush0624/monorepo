@@ -4,12 +4,14 @@ py_library(
     name = "app",
     srcs = [
         "api.py",
+        "db.py",
         "models.py",
     ],
     visibility = ["//:__subpackages__"],
     deps = [
         "@pypi//fastapi",
         "@pypi//pydantic",
+        "@pypi//sqlalchemy",
     ],
 )
 

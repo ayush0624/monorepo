@@ -19,6 +19,7 @@ manifest:
     iniconfig: iniconfig
     packaging: packaging
     pluggy: pluggy
+    psycopg2: psycopg2_binary
     py: pytest
     pydantic: pydantic
     pydantic_core: pydantic_core
@@ -32,4 +33,4 @@ manifest:
     uvicorn: uvicorn
   pip_repository:
     name: pypi
-integrity: de00a9a37ffd5350b5f774cc800e2584c9199a7f91f21e26b8f5db80d94eaa6a
+integrity: 6079f36fb7a6d3f39cbc448d94f0531c00628d6f5ba53f0ab08b6ec650909a07
