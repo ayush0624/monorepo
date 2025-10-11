@@ -1,32 +1,6 @@
-from pydantic import BaseModel
-from typing import Optional
-import enum
-import datetime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column
 from sqlalchemy import Enum, text, DateTime
-
-
-class Priority(enum.Enum):
-    LOW = "low"
-    MEDIUM = "medium"
-    HIGH = "high"
-    CRITICAL = "critical"
-
-
-# --------------------
-# Pydantic Models
-# --------------------
-
-
-class ProjectBase(BaseModel):
-    name: str
-    description: Optional[str]
-    priority: Priority = Priority.MEDIUM
-
-
-# --------------------
-# ORM Models
-# --------------------
+from projects.concord.app.schema import Priority
 
 
 class Base(DeclarativeBase):
