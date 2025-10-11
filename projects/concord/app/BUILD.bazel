@@ -12,7 +12,6 @@ py_library(
         "@pypi//fastapi",
         "@pypi//pydantic",
         "@pypi//sqlalchemy",
-        "@pypi//psycopg2_binary"
     ],
 )
 

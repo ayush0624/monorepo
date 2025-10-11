@@ -18,19 +18,14 @@ async def ping() -> Dict[str, str]:
 
 # Get all of the projects available
 @app.get("/projects")
-def get_all_projects(
-    db: Session = Depends(get_db)
-):
+def get_all_projects(db: Session = Depends(get_db)):
     projects = db.query(Project).all()
     return {"data": projects}
 
 
 # Get the project based on a given ID
 @app.get("/projects/{id}")
-def get_project_by_id(
-    id: int,
-    db: Session = Depends(get_db)
-):
+def get_project_by_id(id: int, db: Session = Depends(get_db)):
     db_project = db.query(Project).filter(Project.id == id).first()
     if not db_project:
         raise HTTPException(
@@ -43,10 +38,7 @@ def get_project_by_id(
 
 # Create a new project
 @app.post("/projects", status_code=status.HTTP_201_CREATED)
-def create_new_project(
-    new_project: ProjectBase,
-    db: Session = Depends(get_db)
-):
+def create_new_project(new_project: ProjectBase, db: Session = Depends(get_db)):
     project_entry = Project(**new_project.model_dump())
     db.add(project_entry)
     db.commit()
@@ -57,10 +49,7 @@ def create_new_project(
 
 # Delete a specific project based on a given ID
 @app.delete("/projects/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_project_by_id(
-    id: int,
-    db: Session = Depends(get_db)
-):
+def delete_project_by_id(id: int, db: Session = Depends(get_db)):
     db_query = db.query(Project).filter(Project.id == id)
     db_project = db_query.first()
     if not db_project:
@@ -78,9 +67,7 @@ def delete_project_by_id(
 # Update the information of a project by ID
 @app.put("/projects/{id}")
 def update_project_by_id(
-    id: int, 
-    updated_project: ProjectBase,
-    db: Session = Depends(get_db)
+    id: int, updated_project: ProjectBase, db: Session = Depends(get_db)
 ):
     db_query = db.query(Project).filter(Project.id == id)
     db_project = db_query.first()
@@ -91,8 +78,8 @@ def update_project_by_id(
         )
 
     db_query.update(
-        updated_project.model_dump(exclude_unset=True), # type: ignore[arg-type]
-        synchronize_session=False
+        updated_project.model_dump(exclude_unset=True),  # type: ignore[arg-type]
+        synchronize_session=False,
     )
 
     db.commit()
