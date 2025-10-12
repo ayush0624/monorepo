@@ -1,0 +1,15 @@
+load("@rules_python//python:defs.bzl", "py_library")
+
+py_library(
+    name = "alembic",
+    srcs = [
+        "__init__.py",
+        "env.py",
+    ],
+    visibility = ["//:__subpackages__"],
+    deps = [
+        "//projects/concord/app/common",
+        "@pypi//alembic",
+        "@pypi//sqlalchemy",
+    ],
+)
