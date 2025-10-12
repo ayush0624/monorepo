@@ -6,6 +6,7 @@
 ---
 manifest:
   modules_mapping:
+    alembic: alembic
     annotated_types: annotated_types
     anyio: anyio
     bcrypt: bcrypt
@@ -25,6 +26,8 @@ manifest:
     idna: idna
     iniconfig: iniconfig
     jose: python_jose
+    mako: mako
+    markupsafe: markupsafe
     multipart: python_multipart
     packaging: packaging
     passlib: passlib
@@ -49,4 +52,4 @@ manifest:
     uvicorn: uvicorn
   pip_repository:
     name: pypi
-integrity: 8aa1b9e069302f279da852e0b795e00008cc2e0ad9623e2a403155cbf88a4fe6
+integrity: ff1ec52f8790f4586405bcf60ae3af82d2456aaa06448268339baff76c6ddc00
