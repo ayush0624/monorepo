@@ -1,5 +1,6 @@
 load("@rules_multirun//:defs.bzl", "command")
 load("@rules_python//python:defs.bzl", "py_library")
+load("//bazel/python:defs.bzl", "alembic")
 load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
 
 py_library(
@@ -17,15 +18,9 @@ py_library(
     ],
 )
 
-py_console_script_binary(
-    name = "alembic_bin",
-    pkg = "@pypi//alembic",
-    script = "alembic",
-    deps = ["//projects/concord/db/alembic"],
+alembic(
+    name = "bin",
+    config = "//projects/concord/db/alembic",
+    versions = "//projects/concord/db/alembic/versions"
 )
 
-command(
-    name = "bin",
-    command = ":alembic_bin",
-    run_from_workspace_root = True,
-)
