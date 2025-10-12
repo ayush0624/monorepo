@@ -3,4 +3,4 @@ bazel-out
 bazel-testlogs
 bazel-monorepo
 venv
-**/__pycache__/
+__pycache__/

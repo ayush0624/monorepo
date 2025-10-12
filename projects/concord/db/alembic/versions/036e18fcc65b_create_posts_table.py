@@ -18,6 +18,14 @@ down_revision: Union[str, Sequence[str], None] = None
 branch_labels: Union[str, Sequence[str], None] = None
 depends_on: Union[str, Sequence[str], None] = None
 
+priority_enum = sa.Enum(
+    "LOW",
+    "MEDIUM",
+    "HIGH",
+    "CRITICAL",
+    name="project_priority",
+)
+
 
 def upgrade() -> None:
     """Upgrade schema."""
@@ -34,14 +42,7 @@ def upgrade() -> None:
         ),
         sa.Column(
             "priority",
-            sa.Enum(
-                "LOW",
-                "MEDIUM",
-                "HIGH",
-                "CRITICAL",
-                name="project_priority",
-                checkfirst=True,
-            ),
+            priority_enum,
             nullable=False,
             server_default=sa.text("'MEDIUM'"),
         ),
@@ -49,7 +50,7 @@ def upgrade() -> None:
             "created_at",
             sa.DateTime(timezone=True),
             nullable=False,
-            server_default=sa.text("'now'"),
+            server_default=sa.text("now()"),
         ),
     )
 
@@ -59,4 +60,5 @@ def upgrade() -> None:
 def downgrade() -> None:
     """Downgrade schema."""
     op.drop_table("projects")
+    priority_enum.drop(op.get_bind(), checkfirst=True)
     pass

@@ -2,7 +2,11 @@ load("@rules_python//python:defs.bzl", "py_library")
 
 py_library(
     name = "versions",
-    srcs = ["036e18fcc65b_create_posts_table.py"],
+    srcs = [
+        "036e18fcc65b_create_posts_table.py",
+        "561b4ae1e7cd_add_foreign_key_to_projects_table.py",
+        "f13d6347876c_create_users_table.py",
+    ],
     visibility = ["//:__subpackages__"],
     deps = [
         "@pypi//alembic",

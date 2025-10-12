@@ -1,8 +1,8 @@
 from fastapi import FastAPI, status, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Dict
-from projects.concord.app.common.models import Base, User
-from projects.concord.app.common.db import engine, get_db
+from projects.concord.app.common.models import User
+from projects.concord.app.common.db import get_db
 from projects.concord.app.common.utils import verify
 from projects.concord.app.common.oath2 import (
     JWTPayload,
@@ -16,7 +16,6 @@ from sqlalchemy.orm import Session
 app = FastAPI()
 app.include_router(projects_router)
 app.include_router(users_router)
-Base.metadata.create_all(engine)
 
 
 # Default ping function to test connectivity
