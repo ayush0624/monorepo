@@ -1,7 +1,7 @@
 load("@rules_multirun//:defs.bzl", "command")
 load("@rules_python//python:defs.bzl", "py_library")
-load("//bazel/python:defs.bzl", "alembic")
 load("@rules_python//python/entry_points:py_console_script_binary.bzl", "py_console_script_binary")
+load("//bazel/python:defs.bzl", "alembic")
 
 py_library(
     name = "alembic",
@@ -21,6 +21,5 @@ py_library(
 alembic(
     name = "bin",
     config = "//projects/concord/db/alembic",
-    versions = "//projects/concord/db/alembic/versions"
+    versions = "//projects/concord/db/alembic/versions",
 )
-
