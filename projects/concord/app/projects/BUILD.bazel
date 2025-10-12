@@ -3,13 +3,13 @@ load("@rules_python//python:defs.bzl", "py_library")
 py_library(
     name = "projects",
     srcs = [
-        "models.py",
         "router.py",
         "schema.py",
     ],
     visibility = ["//:__subpackages__"],
     deps = [
         "//projects/concord/app/common",
+        "//projects/concord/app/users",
         "@pypi//fastapi",
         "@pypi//pydantic",
         "@pypi//sqlalchemy",

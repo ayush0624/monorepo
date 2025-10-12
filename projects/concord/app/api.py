@@ -2,7 +2,7 @@ from fastapi import FastAPI, status, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Dict
 
-from projects.concord.app.common.models import Base
+from projects.concord.app.common.models import Base, User
 from projects.concord.app.common.db import engine, get_db
 from projects.concord.app.common.utils import verify
 from projects.concord.app.common.oath2 import (
@@ -12,7 +12,6 @@ from projects.concord.app.common.oath2 import (
 )
 from projects.concord.app.projects.router import router as projects_router
 from projects.concord.app.users.router import router as users_router
-from projects.concord.app.users.models import User
 from sqlalchemy.orm import Session
 
 app = FastAPI()
