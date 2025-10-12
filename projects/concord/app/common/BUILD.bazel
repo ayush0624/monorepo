@@ -3,9 +3,14 @@ load("@rules_python//python:defs.bzl", "py_library")
 py_library(
     name = "common",
     srcs = [
+        "db.py",
+        "models.py",
         "types.py",
         "utils.py",
     ],
     visibility = ["//:__subpackages__"],
-    deps = ["@pypi//passlib"],
+    deps = [
+        "@pypi//passlib",
+        "@pypi//sqlalchemy",
+    ],
 )
