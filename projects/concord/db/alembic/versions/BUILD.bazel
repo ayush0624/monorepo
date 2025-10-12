@@ -1,7 +1,0 @@
-load("@rules_python//python:defs.bzl", "py_library")
-
-py_library(
-    name = "versions",
-    srcs = ["47a046bd6b95_create_posts_table.py"],
-    visibility = ["//:__subpackages__"],
-)
