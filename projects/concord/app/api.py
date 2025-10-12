@@ -5,15 +5,17 @@ from sqlalchemy.orm import Session
 
 from projects.concord.app.models import Base, Project, User
 from projects.concord.app.db import engine, get_db
-from projects.concord.app.schema import (
+from projects.concord.app.projects.schema import (
     ProjectCreate,
     ProjectCreateResponse,
     ProjectResponse,
+)
+from projects.concord.app.users.schema import (
     UserCreate,
     UserResponse,
     UserCreateResponse,
 )
-from projects.concord.app.utils import hash
+from projects.concord.app.common.utils import hash
 
 app = FastAPI()
 Base.metadata.create_all(engine)

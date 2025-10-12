@@ -6,16 +6,15 @@ py_library(
         "api.py",
         "db.py",
         "models.py",
-        "schema.py",
-        "utils.py",
     ],
     visibility = ["//:__subpackages__"],
     deps = [
+        "//projects/concord/app/common",
+        "//projects/concord/app/projects",
+        "//projects/concord/app/users",
         "@pypi//email_validator",  #keep
         "@pypi//fastapi",
-        "@pypi//passlib",
         "@pypi//psycopg2_binary",  #keep
-        "@pypi//pydantic",
         "@pypi//sqlalchemy",
     ],
 )
