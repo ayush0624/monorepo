@@ -2,10 +2,7 @@ load("@rules_python//python:defs.bzl", "py_binary", "py_library")
 
 py_library(
     name = "app",
-    srcs = [
-        "api.py",
-        "models.py",
-    ],
+    srcs = ["api.py"],
     visibility = ["//:__subpackages__"],
     deps = [
         "//projects/concord/app/common",
@@ -14,7 +11,6 @@ py_library(
         "@pypi//email_validator",  #keep
         "@pypi//fastapi",
         "@pypi//psycopg2_binary",  #keep
-        "@pypi//sqlalchemy",
     ],
 )
 

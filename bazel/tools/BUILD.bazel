@@ -11,9 +11,19 @@ copy_file(
 )
 
 command(
-    name = "ruff",
+    name = "ruff-format",
     arguments = [
         "format",
+    ],
+    command = ":ruff_bin",
+    run_from_workspace_root = True,
+)
+
+command(
+    name = "ruff-fix",
+    arguments = [
+        "check",
+        "--fix",
     ],
     command = ":ruff_bin",
     run_from_workspace_root = True,
