@@ -14,6 +14,7 @@ manifest:
     click: click
     cryptography: cryptography
     dns: dnspython
+    dotenv: python_dotenv
     ecdsa: ecdsa
     email_validator: email_validator
     fastapi: fastapi
@@ -34,6 +35,7 @@ manifest:
     pycparser: pycparser
     pydantic: pydantic
     pydantic_core: pydantic_core
+    pydantic_settings: pydantic_settings
     pygments: pygments
     pytest: pytest
     python_multipart: python_multipart
@@ -47,4 +49,4 @@ manifest:
     uvicorn: uvicorn
   pip_repository:
     name: pypi
-integrity: 9a157a9a55ce29d0eb5b9511406d87678add29779b1b09ad870891c2804112ad
+integrity: 8aa1b9e069302f279da852e0b795e00008cc2e0ad9623e2a403155cbf88a4fe6
