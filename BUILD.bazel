@@ -33,7 +33,8 @@ multirun(
     name = "autofix",
     commands = [
         ":gazelle",
-        "//bazel/tools:ruff",
+        "//bazel/tools:ruff-fix",
+        "//bazel/tools:ruff-format",
     ],
     jobs = 0,  # Set to 0 to run in parallel, defaults to sequential
 )
