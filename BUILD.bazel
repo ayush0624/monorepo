@@ -2,7 +2,10 @@ load("@gazelle//:def.bzl", "gazelle", "gazelle_binary")
 load("@rules_multirun//:defs.bzl", "multirun")
 load("@rules_uv//uv:venv.bzl", "create_venv")
 
-exports_files([".ruff.toml", "alembic.ini"])
+exports_files([
+    ".ruff.toml",
+    "alembic.ini",
+])
 
 gazelle_binary(
     name = "gazelle_bin",
