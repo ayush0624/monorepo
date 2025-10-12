@@ -11,7 +11,9 @@ py_library(
     ],
     visibility = ["//:__subpackages__"],
     deps = [
+        "@pypi//fastapi",
         "@pypi//passlib",
+        "@pypi//pydantic",
         "@pypi//python_jose",
         "@pypi//sqlalchemy",
     ],
