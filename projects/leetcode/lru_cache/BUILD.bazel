@@ -1,0 +1,14 @@
+load("@rules_python//python:defs.bzl", "py_library")
+load("//bazel/python:defs.bzl", "pytest_test")
+
+py_library(
+    name = "lru_cache",
+    srcs = ["solution.py"],
+    visibility = ["//:__subpackages__"],
+)
+
+pytest_test(
+    name = "test_solution",
+    srcs = ["test_solution.py"],
+    deps = [":lru_cache"],
+)
