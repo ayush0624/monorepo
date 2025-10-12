@@ -11,6 +11,8 @@ py_library(
         "@pypi//email_validator",  #keep
         "@pypi//fastapi",
         "@pypi//psycopg2_binary",  #keep
+        "@pypi//python_multipart",  #keep
+        "@pypi//sqlalchemy",
     ],
 )
 

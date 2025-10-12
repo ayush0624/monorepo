@@ -5,12 +5,14 @@ py_library(
     srcs = [
         "db.py",
         "models.py",
+        "oath2.py",
         "types.py",
         "utils.py",
     ],
     visibility = ["//:__subpackages__"],
     deps = [
         "@pypi//passlib",
+        "@pypi//python_jose",
         "@pypi//sqlalchemy",
     ],
 )

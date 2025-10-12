@@ -12,7 +12,9 @@ manifest:
     certifi: certifi
     cffi: cffi
     click: click
+    cryptography: cryptography
     dns: dnspython
+    ecdsa: ecdsa
     email_validator: email_validator
     fastapi: fastapi
     greenlet: greenlet
@@ -21,16 +23,22 @@ manifest:
     httpx: httpx
     idna: idna
     iniconfig: iniconfig
+    jose: python_jose
+    multipart: python_multipart
     packaging: packaging
     passlib: passlib
     pluggy: pluggy
     psycopg2: psycopg2_binary
     py: pytest
+    pyasn1: pyasn1
     pycparser: pycparser
     pydantic: pydantic
     pydantic_core: pydantic_core
     pygments: pygments
     pytest: pytest
+    python_multipart: python_multipart
+    rsa: rsa
+    six: six
     sniffio: sniffio
     sqlalchemy: sqlalchemy
     starlette: starlette
@@ -39,4 +47,4 @@ manifest:
     uvicorn: uvicorn
   pip_repository:
     name: pypi
-integrity: 86aca9f9a6c579c0a639066333ec1f5e6ecb1b20ba3a1879d6c392a342e87e25
+integrity: 9a157a9a55ce29d0eb5b9511406d87678add29779b1b09ad870891c2804112ad
