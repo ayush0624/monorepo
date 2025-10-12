@@ -8,8 +8,12 @@ manifest:
   modules_mapping:
     annotated_types: annotated_types
     anyio: anyio
+    bcrypt: bcrypt
     certifi: certifi
+    cffi: cffi
     click: click
+    dns: dnspython
+    email_validator: email_validator
     fastapi: fastapi
     greenlet: greenlet
     h11: h11
@@ -18,9 +22,11 @@ manifest:
     idna: idna
     iniconfig: iniconfig
     packaging: packaging
+    passlib: passlib
     pluggy: pluggy
     psycopg2: psycopg2_binary
     py: pytest
+    pycparser: pycparser
     pydantic: pydantic
     pydantic_core: pydantic_core
     pygments: pygments
@@ -33,4 +39,4 @@ manifest:
     uvicorn: uvicorn
   pip_repository:
     name: pypi
-integrity: 6079f36fb7a6d3f39cbc448d94f0531c00628d6f5ba53f0ab08b6ec650909a07
+integrity: 86aca9f9a6c579c0a639066333ec1f5e6ecb1b20ba3a1879d6c392a342e87e25
