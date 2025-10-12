@@ -22,12 +22,3 @@ class UserResponse(Base):
 class UserCreateResponse(UserResponse):
     id: int
     created_at: datetime
-
-
-class UserJWTPayload(BaseModel):
-    id: int
-
-
-class UserLoginResponse(BaseModel):
-    access_token: str
-    token_type: str = "bearer"

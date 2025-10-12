@@ -1,10 +1,28 @@
-from jose import jwt
+from jose import jwt, JWTError
 from typing import Dict
 from datetime import datetime, timedelta, timezone
+from pydantic import BaseModel, ValidationError
+from fastapi import Depends, status, HTTPException
+from fastapi.security import OAuth2PasswordBearer
 
 SECRET_KEY = "e5022c455d31efcf1d834409726e916fb6772547014e1216b9141033d488d34f"
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
+oath2_scheme = OAuth2PasswordBearer(tokenUrl="login")
+
+
+class JWTPayload(BaseModel):
+    user_id: int
+
+
+class JWTToken(JWTPayload):
+    exp: datetime
+
+
+class JWTResponse(BaseModel):
+    access_token: str
+    token_type: str = "bearer"
 
 
 def create_access_token(data: Dict):
@@ -16,3 +34,24 @@ def create_access_token(data: Dict):
     token = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
     return token
+
+
+class CredentialsException(HTTPException):
+    def __init__(self, detail: str = "Could not validate credentials"):
+        super().__init__(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=detail,
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+
+def get_current_user_id(token: str = Depends(oath2_scheme)) -> int:
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        jwt_token = JWTToken(**payload)
+    except JWTError as e:
+        raise CredentialsException(f"Invalid JWT Token: {e}")
+    except ValidationError as e:
+        raise CredentialsException(f"Malformed Token Payload: {e}")
+
+    return jwt_token.user_id
