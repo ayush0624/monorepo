@@ -4,8 +4,9 @@ from datetime import datetime, timedelta, timezone
 from pydantic import BaseModel, ValidationError
 from fastapi import Depends, status, HTTPException
 from fastapi.security import OAuth2PasswordBearer
+from projects.concord.app.common.config import settings
 
-SECRET_KEY = "e5022c455d31efcf1d834409726e916fb6772547014e1216b9141033d488d34f"
+SECRET_KEY = settings.JWT_SECRET
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 

@@ -12,6 +12,10 @@ build --incompatible_use_specific_tool_files=false
 build --aspects=//bazel:lint.bzl%ruff
 build --@aspect_rules_lint//lint:fail_on_violation
 
+# For concord env
+build --action_env=CONCORD_DB_URL
+build --action_env=CONCORD_JWT_SECRET
+
 # -------------------
 # Test Flags
 # -------------------

@@ -1,7 +1,6 @@
 from fastapi import FastAPI, status, Depends, HTTPException
 from fastapi.security import OAuth2PasswordRequestForm
 from typing import Dict
-
 from projects.concord.app.common.models import Base, User
 from projects.concord.app.common.db import engine, get_db
 from projects.concord.app.common.utils import verify
