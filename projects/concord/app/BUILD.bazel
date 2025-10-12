@@ -7,10 +7,13 @@ py_library(
         "db.py",
         "models.py",
         "schema.py",
+        "utils.py",
     ],
     visibility = ["//:__subpackages__"],
     deps = [
+        "@pypi//email_validator",  #keep
         "@pypi//fastapi",
+        "@pypi//passlib",
         "@pypi//psycopg2_binary",  #keep
         "@pypi//pydantic",
         "@pypi//sqlalchemy",
