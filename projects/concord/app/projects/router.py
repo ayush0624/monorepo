@@ -4,7 +4,7 @@ from projects.concord.app.projects.schema import (
     ProjectResponse,
 )
 from typing import List
-from projects.concord.app.projects.models import Project
+from projects.concord.app.common.models import Project
 from projects.concord.app.common.db import get_db
 from projects.concord.app.common.oath2 import get_current_user_id
 from fastapi import status, HTTPException, Response, Depends, APIRouter
@@ -17,21 +17,28 @@ router = APIRouter(prefix="/projects", tags=["projects"])
 
 # Get all of the projects available
 @router.get("/", response_model=List[ProjectResponse])
-def get_all_projects(db: Session = Depends(get_db), _: int = Depends(get_current_user_id)):
-    projects = db.query(Project).all()
+def get_all_projects(
+    db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)
+):
+    projects = db.query(Project).filter(Project.owner_id == user_id).all()
     return projects
 
 
 # Get the project based on a given ID
 @router.get("/{id}", response_model=ProjectResponse)
 def get_project_by_id(
-    id: int, db: Session = Depends(get_db), _: int = Depends(get_current_user_id)
+    id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)
 ):
     db_project = db.query(Project).filter(Project.id == id).first()
     if not db_project:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"project with id={id} does not exist",
+        )
+    if db_project.owner_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"this project belongs to: {db_project.owner.email}, you cannot view it.",
         )
 
     return db_project
@@ -46,9 +53,10 @@ def get_project_by_id(
 def create_new_project(
     new_project: ProjectCreate,
     db: Session = Depends(get_db),
-    _: int = Depends(get_current_user_id),
+    owner_id: int = Depends(get_current_user_id),
 ):
     project_entry = Project(**new_project.model_dump())
+    project_entry.owner_id = owner_id
     try:
         db.add(project_entry)
         db.commit()
@@ -65,7 +73,7 @@ def create_new_project(
 # Delete a specific project based on a given ID
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_project_by_id(
-    id: int, db: Session = Depends(get_db), _: int = Depends(get_current_user_id)
+    id: int, db: Session = Depends(get_db), user_id: int = Depends(get_current_user_id)
 ):
     db_query = db.query(Project).filter(Project.id == id)
     db_project = db_query.first()
@@ -73,6 +81,11 @@ def delete_project_by_id(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"project with id={id} does not exist",
+        )
+    if db_project.owner_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"this project belongs to: {db_project.owner.email}, you cannot delete it.",
         )
 
     try:
@@ -93,7 +106,7 @@ def update_project_by_id(
     id: int,
     updated_project: ProjectCreate,
     db: Session = Depends(get_db),
-    _: int = Depends(get_current_user_id),
+    user_id: int = Depends(get_current_user_id),
 ):
     db_query = db.query(Project).filter(Project.id == id)
     db_project = db_query.first()
@@ -101,6 +114,11 @@ def update_project_by_id(
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
             detail=f"project with id={id} does not exist",
+        )
+    if db_project.owner_id != user_id:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail=f"this project belongs to: {db_project.owner.email}, you cannot delete it.",
         )
 
     try:

@@ -7,7 +7,7 @@ from fastapi import status, HTTPException, Depends, APIRouter
 from sqlalchemy.orm import Session
 from projects.concord.app.common.db import get_db
 from projects.concord.app.common.utils import hash
-from projects.concord.app.users.models import User
+from projects.concord.app.common.models import User
 
 # Define the API routes for users
 router = APIRouter(prefix="/users", tags=["users"])
