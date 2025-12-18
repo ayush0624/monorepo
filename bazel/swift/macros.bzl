@@ -1,6 +1,6 @@
 """Rules and macros for building Swift applications for macOS."""
 
-load("@build_bazel_rules_apple//apple:macos.bzl", "macos_application")
+load("@build_bazel_rules_apple//apple:macos.bzl", "macos_application", _macos_unit_test = "macos_unit_test")
 load("@build_bazel_rules_swift//swift:swift.bzl", "swift_library")
 
 
@@ -33,6 +33,35 @@ def macos_swift_app(name, srcs, infoplist, minimum_os_version = "10.13", bundle_
         infoplists = infoplist,
         minimum_os_version = minimum_os_version,
         deps = [":" + name + "_lib"],
+    )
+
+def macos_unit_test(name, srcs, minimum_os_version, deps = []):
+    """
+    A custom macro to create run a macos unit test
+
+    Args:
+        name: The target name for the test.
+        srcs: A list of Swift test files.
+        minimum_os_version: The minimum supported macOS version.
+        deps: The dependencies to add to the unit test.
+    """
+
+    lib_name = name + "Lib"
+
+    swift_library(
+        name = lib_name,
+        testonly = True,
+        srcs = srcs,
+        module_name = name,
+        tags = ["manual"],
+        deps = deps,
+    )
+
+    _macos_unit_test(
+        name = name,
+        bundle_id = "com.example.unittest",
+        minimum_os_version = minimum_os_version,
+        deps = [":" + lib_name],
     )
     
     

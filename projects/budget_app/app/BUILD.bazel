@@ -6,6 +6,15 @@ filegroup(
     visibility = ["//visibility:public"],
 )
 
+filegroup(
+    name = "src_test",
+    srcs = glob(
+        ["**/*.swift"],
+        exclude = ["BudgetApp.swift"],  # Exclude @main entry point for tests
+    ),
+    visibility = ["//visibility:public"],
+)
+
 swift_library(
     name = "lib",
     srcs = [":src"],
@@ -16,9 +25,9 @@ swift_library(
     name = "lib_test",
     # If your library has dependencies, list them here.
     # For testing with `@testable import BudgetAppLib`,
-    # it’s often helpful to mark the library as testonly:
+    # it's often helpful to mark the library as testonly:
     testonly = True,
-    srcs = [":src"],
+    srcs = [":src_test"],
     module_name = "BudgetAppLib",
     visibility = ["//visibility:public"],
 )
