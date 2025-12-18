@@ -35,7 +35,7 @@ def macos_swift_app(name, srcs, infoplist, minimum_os_version = "10.13", bundle_
         deps = [":" + name + "_lib"],
     )
 
-def macos_unit_test(name, srcs, minimum_os_version, deps = []):
+def macos_unit_test(name, srcs, minimum_os_version, deps = [], **kwargs):
     """
     A custom macro to create run a macos unit test
 
@@ -44,6 +44,7 @@ def macos_unit_test(name, srcs, minimum_os_version, deps = []):
         srcs: A list of Swift test files.
         minimum_os_version: The minimum supported macOS version.
         deps: The dependencies to add to the unit test.
+        **kwargs: Additional arguments to pass to the macos_unit_test rule.
     """
 
     lib_name = name + "Lib"
@@ -62,6 +63,7 @@ def macos_unit_test(name, srcs, minimum_os_version, deps = []):
         bundle_id = "com.example.unittest",
         minimum_os_version = minimum_os_version,
         deps = [":" + lib_name],
+        **kwargs
     )
     
     
