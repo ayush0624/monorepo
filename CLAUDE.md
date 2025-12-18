@@ -4,130 +4,302 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a personal projects monorepo built with Bazel, containing multiple applications and tools. The repository uses Bazel's MODULE.bazel system for dependency management and follows a structured approach to multi-language development.
+This is a polyglot monorepo containing multiple personal projects, built with Bazel for multi-language support. The repository includes Python (FastAPI), Swift (macOS apps), and Go projects.
 
-## Project Structure
+## Build System: Bazel
 
-- **budget_app/**: SwiftUI macOS application for personal finance management
-  - Uses custom Bazel macros for Swift app builds
-  - Stores data in JSON format locally in `~/.budget`
-  - Architecture: Models, Views, Storage layers
-- **git/**: Go CLI application built with Cobra framework
-- **bazel/**: Shared Bazel configuration and custom macros
-  - `swift/macros.bzl`: Custom macros for building macOS Swift applications
-  - `go/`: Go module configuration and dependencies
+All projects use Bazel as the primary build system. Bazel is configured for Python 3.13, Go 1.22.2, and Swift/Apple platforms.
 
-## Build Commands
+### Common Bazel Commands
 
-### Budget App (Swift/macOS)
+**Building:**
 ```bash
-# Build the Budget App
-bazel build //budget_app:BudgetApp
-
-# Run tests for Budget App
-bazel test //budget_app/tests:DataStoreTests
-```
-
-### Git CLI Tool (Go)
-```bash
-# Build the Git CLI binary
-bazel build //git:binary
-```
-
-### General Bazel Commands
-```bash
-# Build all targets
+# Build entire monorepo
 bazel build //...
 
+# Build specific project
+bazel build //projects/concord/app:concord
+bazel build //projects/budget_app:BudgetApp
+bazel build //projects/bookshelf/main:bookshelf
+
+# Build a single target
+bazel build //projects/concord/app/projects:projects
+```
+
+**Testing:**
+```bash
 # Run all tests
 bazel test //...
 
-# Clean build artifacts
-bazel clean
+# Run tests for specific project
+bazel test //projects/concord/tests:all
+bazel test //projects/budget_app/tests:DataStoreTests
+
+# Run single test file
+bazel test //projects/concord/tests:test_projects
 ```
 
-## Architecture Notes
+**Code Quality:**
+```bash
+# Auto-fix formatting and linting (runs gazelle, ruff fix, and ruff format in parallel)
+bazel run //:autofix
 
-### Custom Bazel Macros
-The repository uses custom Swift macros defined in `bazel/swift/macros.bzl`:
-- `macos_swift_app()`: Simplifies creating macOS applications with Swift
-- Automatically generates bundle IDs and handles swift_library + macos_application setup
+# Regenerate BUILD files with gazelle
+bazel run //:gazelle
 
-### Dependencies
-- **Swift**: Uses rules_swift, rules_apple, and apple_support
-- **Go**: Managed through go.mod in `bazel/go/` with Cobra CLI framework
-- **Bazel Version**: Uses MODULE.bazel (bzlmod) instead of legacy WORKSPACE
+# Format Python code with ruff
+bazel run //bazel/tools:ruff-format
 
-### Configuration
-- `.bazelrc`: Enables Go race detection and specific tool configurations
-- Minimum macOS version: 13.0 for Swift applications
-- Go version: 1.20
+# Fix Python linting issues with ruff
+bazel run //bazel/tools:ruff-fix
+```
+
+**Dependency Management:**
+```bash
+# Update Python dependencies (after modifying bazel/python/packages.in)
+bazel run //bazel/python:requirements.update
+
+# Create/update virtual environment
+bazel run //:create_venv
+```
+
+## Python Development
+
+### Python Dependencies
+
+All Python dependencies are managed through `bazel/python/packages.in`. After modifying this file, run:
+```bash
+bazel run //bazel/python:requirements.update
+```
+
+This generates `bazel/python/requirements.txt` which is used by Bazel's pip integration.
+
+### Custom Python Macros
+
+**pytest_test**: Custom test macro that wraps py_test with pytest support
+- Defined in `bazel/python/pytest/defs.bzl`
+- Automatically includes pytest as a dependency
+- Usage: `load("//bazel/python:defs.bzl", "pytest_test")`
+
+**alembic**: Custom macro for Alembic database migration targets
+- Defined in `bazel/python/alembic.bzl`
+- Automatically includes alembic.ini configuration
+- Usage: `load("//bazel/python:defs.bzl", "alembic")`
+
+### Running Python Applications
+
+Python applications use `__main__.py` as entry points:
+```bash
+# Run Concord FastAPI app
+bazel run //projects/concord/app:concord
+
+# Run Bookshelf FastAPI app
+bazel run //projects/bookshelf/main:bookshelf
+```
+
+### Python Linting
+
+Ruff is configured via `.ruff.toml` and integrated into Bazel builds. The linter runs automatically during builds and will fail on violations (configured via `--@aspect_rules_lint//lint:fail_on_violation`).
+
+## Project Structure
+
+### Concord (Task Management Backend)
+
+**Location:** `projects/concord/`
+
+**Tech Stack:** FastAPI, SQLAlchemy, PostgreSQL, Alembic, JWT authentication
+
+**Architecture:**
+- `app/api.py`: Main FastAPI application with router registration
+- `app/common/`: Shared utilities (database, config, auth, models)
+  - `db.py`: Database session management
+  - `config.py`: Environment-based configuration
+  - `oath2.py`: JWT authentication (note: typo in filename, should be oauth2)
+  - `utils.py`: Password hashing/verification
+  - `models.py`: SQLAlchemy database models
+- `app/projects/`: Project management routes and schemas
+- `app/users/`: User management routes and schemas
+- `db/alembic/`: Database migrations
+- `tests/`: Test suite
+
+**Database Migrations:**
+```bash
+# Run migrations
+bazel run //projects/concord/db:alembic -- upgrade head
+
+# Create new migration
+bazel run //projects/concord/db:alembic -- revision --autogenerate -m "description"
+
+# Rollback migration
+bazel run //projects/concord/db:alembic -- downgrade -1
+```
+
+**Environment Variables:**
+- `CONCORD_DB_URL`: Database connection string
+- `CONCORD_JWT_SECRET`: JWT signing secret
+
+These are passed through Bazel via `.bazelrc`: `build --action_env=CONCORD_DB_URL`
+
+**Key Features:**
+- JWT-based authentication with OAuth2PasswordRequestForm
+- SQLAlchemy ORM with relationship management
+- Concurrency-safe operations with transaction isolation
+- Project and task management with user assignments
+
+### Bookshelf (Learning Project)
+
+**Location:** `projects/bookshelf/`
+
+**Tech Stack:** FastAPI, SQLAlchemy, SQLite
+
+**Architecture:**
+- `tutorial/`: FastAPI learning exercises
+- `main/`: Main bookshelf application with CRUD operations
+- `postgres/`: PostgreSQL integration examples
+- `tests/`: Test suite
+
+**Purpose:** Learning FastAPI fundamentals and database patterns before building Concord.
+
+### Budget App (macOS Application)
+
+**Location:** `projects/budget_app/`
+
+**Tech Stack:** SwiftUI, Bazel (rules_swift, rules_apple)
+
+**Architecture:**
+- `app/`: SwiftUI application code
+  - Models: Transaction, Category
+  - Views: SwiftUI views
+  - Storage: JSON-based local persistence
+- `resources/`: Application resources
+- `tests/`: Unit tests
+
+**Building and Running:**
+```bash
+# Build the app
+bazel build //projects/budget_app:BudgetApp
+
+# Run tests
+bazel test //projects/budget_app/tests:DataStoreTests
+```
+
+**Data Storage:** Stores data in `~/.budget` directory as JSON files.
+
+### LeetCode (Algorithm Practice)
+
+**Location:** `projects/leetcode/`
+
+Contains Python implementations of LeetCode problems with tests.
 
 ## Development Workflow
 
-1. The monorepo is structured to support multiple independent projects
-2. Each project has its own BUILD.bazel files and follows language-specific conventions
-3. Shared Bazel configuration is centralized in the `bazel/` directory
-4. Tests are co-located with source code in dedicated test directories
+### Adding New Python Dependencies
 
-## Custom Workflows
+1. Add package to `bazel/python/packages.in`
+2. Run `bazel run //bazel/python:requirements.update`
+3. Run `bazel run //:gazelle` to update BUILD files
+4. Commit both `packages.in` and generated `requirements.txt`
 
-### Create a PR
+### Creating New Tests
 
-When creating a pull request from the master branch:
+For Python projects, use the `pytest_test` macro:
+```python
+load("//bazel/python:defs.bzl", "pytest_test")
 
-1. **Check current branch**: Verify if currently on master branch
-2. **Create feature branch**: Create a new branch with prefix `ayush/` followed by a descriptive name
-3. **Stage changes**: Add all existing changes to the staging area
-4. **Commit changes**: Create a commit with an appropriate commit message
-5. **Push branch**: Push the new branch to the remote repository
-6. **Create PR**: Use `gh pr create` to create the pull request
-7. **Update PR description**: Use `gh pr edit` to update the PR description with details of what was done
-
-Example flow:
-```bash
-# Check if on master
-git branch --show-current
-
-# Create and switch to feature branch
-git checkout -b ayush/feature-description
-
-# Stage all changes
-git add .
-
-# Commit with descriptive message
-git commit -m "Add feature description"
-
-# Push to remote
-git push -u origin ayush/feature-description
-
-# Create PR
-gh pr create --title "Feature description" --body "Description of changes"
-
-# Update PR description if needed
-gh pr edit --body "Updated description of changes made"
+pytest_test(
+    name = "test_name",
+    srcs = ["test_file.py"],
+    deps = [
+        # dependencies
+    ],
+)
 ```
 
-### Close the PR
+### Code Formatting
 
-When cleaning up after a pull request has been merged or closed:
-
-1. **Check PR status**: Verify if the PR associated with the current branch is closed/merged
-2. **Switch to master**: Switch back to the master branch
-3. **Delete local branch**: Remove the local feature branch
-4. **Update master**: Pull latest changes and rebase with master
-
-Example flow:
+Always run before committing:
 ```bash
-# Check PR status for current branch
-gh pr status
-
-# Switch to master branch
-git checkout master
-
-# Delete the local feature branch (replace branch-name with actual branch)
-git branch -d ayush/branch-name
-
-# Pull latest changes and rebase
-git pull --rebase origin master
+bazel run //:autofix
 ```
+
+This runs gazelle (BUILD file generation), ruff fix (linting), and ruff format (formatting) in parallel.
+
+### Bazel Configuration
+
+**`.bazelrc` settings:**
+- Go race detection enabled: `--@rules_go//go/config:race`
+- Python linting with ruff: `--aspects=//bazel:lint.bzl%ruff`
+- Test output on errors only: `test --test_output=errors`
+
+**Module dependencies (MODULE.bazel):**
+- rules_python (1.6.3): Python toolchain
+- rules_go (0.55.1): Go toolchain
+- rules_swift (2.4.0) + rules_apple (3.18.0): Swift/macOS toolchain
+- gazelle (0.36.0): BUILD file generation
+- rules_oci (2.2.6): Container image support (postgres image for local dev)
+- aspect_rules_lint (1.9.1): Linting infrastructure
+
+## Architecture Patterns
+
+### FastAPI Projects (Concord, Bookshelf)
+
+**Router Pattern:**
+- Main app in `api.py` or `__main__.py`
+- Feature routers in subdirectories (e.g., `projects/router.py`, `users/router.py`)
+- Routers included via `app.include_router()`
+
+**Database Session Management:**
+- Database sessions managed via dependency injection: `db: Session = Depends(get_db)`
+- Session factory in `common/db.py`
+- Connection pooling handled by SQLAlchemy
+
+**Authentication:**
+- JWT tokens created via `create_access_token()` in `common/oath2.py`
+- Password hashing with bcrypt via `common/utils.py`
+- OAuth2 password flow for login endpoint
+
+**Configuration:**
+- Environment variables loaded via `common/config.py`
+- Settings class pattern for type-safe configuration
+
+### Bazel Build Patterns
+
+**Python Targets:**
+- Libraries: `py_library`
+- Binaries: `py_binary`
+- Tests: `pytest_test` (custom macro)
+- Dependencies via `requirement("package-name")` from `@pypi`
+
+**Multi-language Support:**
+- Python toolchain: 3.13
+- Go toolchain: 1.22.2
+- Swift toolchain: configured for macOS 13.0+
+
+## Database Management
+
+### Alembic Migrations (Concord)
+
+Configuration in `alembic.ini` at repository root:
+- Script location: `projects/concord/db/alembic`
+- Versions directory: `projects/concord/db/alembic/versions`
+
+Migration workflow:
+1. Modify SQLAlchemy models in `app/common/models.py`
+2. Generate migration: `bazel run //projects/concord/db:alembic -- revision --autogenerate -m "description"`
+3. Review generated migration in `db/alembic/versions/`
+4. Apply migration: `bazel run //projects/concord/db:alembic -- upgrade head`
+
+### PostgreSQL (Concord)
+
+Uses OCI-pulled postgres image for local development:
+- Image: `arm64v8/postgres`
+- Configured in MODULE.bazel under `oci.pull`
+
+Connection managed via `CONCORD_DB_URL` environment variable.
+
+## Important Notes
+
+- Always run `bazel run //:autofix` before committing to ensure code quality
+- Python import paths follow Bazel workspace structure (e.g., `from projects.concord.app.common.db import get_db`)
+- Tests run with race detection enabled for Go code
+- Linting failures will fail the build
