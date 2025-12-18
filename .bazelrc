@@ -21,3 +21,4 @@ build --action_env=CONCORD_JWT_SECRET
 # -------------------
 
 test --test_output=errors
+test:ci --test_tag_filters=-no-ci

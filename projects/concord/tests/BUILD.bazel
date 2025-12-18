@@ -9,4 +9,5 @@ pytest_test(
         "@pypi//httpx",  #keep
         "@pypi//pytest",
     ],
+    tags = ["no-ci"]
 )

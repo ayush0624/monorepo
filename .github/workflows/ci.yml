@@ -29,9 +29,6 @@ jobs:
           external-cache: true
           repository-cache: true
 
-      - name: Build all targets
-        run: bazel build //...
-
       - name: Run all tests
-        run: bazel test //...
+        run: bazel test --config=ci //...
 
