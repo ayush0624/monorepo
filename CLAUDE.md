@@ -200,6 +200,13 @@ Contains Python implementations of LeetCode problems with tests.
 3. Run `bazel run //:gazelle` to update BUILD files
 4. Commit both `packages.in` and generated `requirements.txt`
 
+### Adding New Go Dependencies
+
+1. Use the package in your Go code (unused imports will be removed automatically)
+2. Install the package: `go get [package-name]`
+3. Clean up dependencies: `go mod tidy`
+4. Update Bazel module dependencies: `bazel mod tidy`
+
 ### Creating New Tests
 
 For Python projects, use the `pytest_test` macro:
